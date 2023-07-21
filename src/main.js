@@ -6,7 +6,7 @@ var gui = {
     	engine.draw.ctx.fillRect(
 			gui.powerBar.vPosition.x1, 
   			gui.powerBar.vPosition.y1, 
-  			(classes.player.power / 100) * gui.powerBar.vPosition.x2, 
+  			(modules.player.power / 100) * gui.powerBar.vPosition.x2, 
   			gui.powerBar.vPosition.y2
   		);
   		engine.draw.ctx.fill();	
@@ -51,34 +51,34 @@ function main() {
   	
   	gui.draw();
   	
-	classes.player.draw();
-	classes.shot.draw();
-	classes.animatedSprite.draw((new Date()).getTime());
-	classes.meteor.draw();
+	modules.player.draw();
+	modules.shot.draw();
+	modules.animatedSprite.draw((new Date()).getTime());
+	modules.meteor.draw();
 
-	classes.player.move();
-	classes.shot.move();
-	classes.meteor.move();
+	modules.player.move();
+	modules.shot.move();
+	modules.meteor.move();
 	
 	if (engine.key.isKeyPressed("ArrowLeft")) {
-		classes.player.angle = classes.player.angle - deltaAngle;
+		modules.player.angle = modules.player.angle - deltaAngle;
 	}
 
 	if (engine.key.isKeyPressed("ArrowRight")) {
-		classes.player.angle = classes.player.angle + deltaAngle;
+		modules.player.angle = modules.player.angle + deltaAngle;
 	}
 		
 	if (engine.key.isKeyPressed("ArrowUp")) {
-		classes.player.changeVelocity(deltaVelocity);
+		modules.player.changeVelocity(deltaVelocity);
 	}
 
 	if (engine.key.isKeyPressed("ArrowDown")) {
-		classes.player.changeVelocity(-2 * deltaVelocity);
+		modules.player.changeVelocity(-2 * deltaVelocity);
 	}
 
 	if (engine.key.isKeyPressed("Space") && (currentTime - pastTime) >= deltaTime) {
-		var s = [{ vPosition : { x: classes.player.vPosition.x, y: classes.player.vPosition.y }, angle: classes.player.angle, angularVelocity: 0.25 }];
-		classes.shot.shot = classes.shot.shot.concat(s);
+		var s = [{ vPosition : { x: modules.player.vPosition.x, y: modules.player.vPosition.y }, angle: modules.player.angle, angularVelocity: 0.25 }];
+		modules.shot.shot = modules.shot.shot.concat(s);
 		engine.sound.playAudioByName("spaceship-shot");
    		pastTime = (new Date()).getTime();
 	}
@@ -92,11 +92,11 @@ function main() {
 
 function refreshGameConditions() {
 
-	if (classes.meteor.meteor.length == 0) {
+	if (modules.meteor.meteor.length == 0) {
 		gameState.situation.win = true;
 	}
 	
-	if (classes.player.power <= 0) {
+	if (modules.player.power <= 0) {
 		gameState.situation.lose = true;
 	}
 
@@ -106,16 +106,16 @@ function refreshGameConditions() {
 	  	gui.youLose();
 	
 	    if (spaceshipExploded == false) {
-	    	classes.player.explodeSpaceship();
+	    	modules.player.explodeSpaceship();
 			spaceshipExploded = true;
 		}
 		
 		if (spaceshipExploded == true) {
-			classes.player.velocity = 0;
-			classes.player.vVelocity.x = 0;
-			classes.player.vVelocity.y = 0;
-			classes.player.vPosition.x = -2 * canvas.width;
-			classes.player.vPosition.y = -2 * canvas.height;
+			modules.player.velocity = 0;
+			modules.player.vVelocity.x = 0;
+			modules.player.vVelocity.y = 0;
+			modules.player.vPosition.x = -2 * canvas.width;
+			modules.player.vPosition.y = -2 * canvas.height;
 		}
 		
 	}	
@@ -124,33 +124,33 @@ function refreshGameConditions() {
 
 function testCollisions() {
 	
-	var radiusSM = 0.61 * (classes.shot.scale + classes.meteor.scale) * (classes.shot.radius + classes.meteor.radius);
-	var radiusPM = 0.61 * (classes.player.scale + classes.meteor.scale) * (classes.player.radius + classes.meteor.radius);
+	var radiusSM = 0.61 * (modules.shot.scale + modules.meteor.scale) * (modules.shot.radius + modules.meteor.radius);
+	var radiusPM = 0.61 * (modules.player.scale + modules.meteor.scale) * (modules.player.radius + modules.meteor.radius);
 
-	classes.shot.shot.forEach(
+	modules.shot.shot.forEach(
 		function(itemShot, indexShot) { 
-			classes.meteor.meteor.forEach(
+			modules.meteor.meteor.forEach(
 				function(itemMeteor, indexMeteor) {
 					if (engine.util.contains(itemShot, itemMeteor, radiusSM)) 
 					{
 						engine.sound.playAudioByName("meteor-explosion")
-						classes.animatedSprite.setAnimation(itemMeteor)
-						classes.meteor.meteor.splice(indexMeteor, 1)
-						classes.shot.shot.splice(indexShot, 1)		
+						modules.animatedSprite.setAnimation(itemMeteor)
+						modules.meteor.meteor.splice(indexMeteor, 1)
+						modules.shot.shot.splice(indexShot, 1)		
 					}
 				}
 			)
 		}
 	)
 	
-	classes.meteor.meteor.forEach(
+	modules.meteor.meteor.forEach(
 		function(item, index) {
-			if (engine.util.contains(classes.player, item, radiusPM)) 
+			if (engine.util.contains(modules.player, item, radiusPM)) 
 			{
-				classes.player.power = classes.player.power - 25;
+				modules.player.power = modules.player.power - 25;
 				engine.sound.playAudioByName("spaceship-meteor-impact")
-				classes.animatedSprite.setAnimation(item)
-				classes.meteor.meteor.splice(index, 1)
+				modules.animatedSprite.setAnimation(item)
+				modules.meteor.meteor.splice(index, 1)
 			}
 		}
 	) 
@@ -160,6 +160,6 @@ function testCollisions() {
 window.onload 
 {
 	engine.key.setKeyListeners();
-	classes.meteor.populateWithMeteors();
+	modules.meteor.populateWithMeteors();
 	engine.resources.loadResources(engine.resources.areResourcesPrepared);
 }

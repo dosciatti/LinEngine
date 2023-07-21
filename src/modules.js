@@ -96,44 +96,26 @@ var player = {
     		
 		engine.sound.playAudioByName('spaceship-explosion');
 
- 		var animSpriteA = 
-		[{ 
-			img: engine.resources.data[3], 
-			vPosition: {x: x - 98 / 2, y: y - 95 / 2 - 10}, 
-			cols: 5, rows: 5, numberOfRepetitions: 1, 
-			spriteWidth: 98, spriteHeight: 95,
-			frame : -1, countNumberOfRepetitions : 0, 
-			xIndex: 0, yIndex: 0,
-			pastTime : (new Date()).getTime()
-		}];
+		var distanceX = 0, distanceY = 0
+ 		
+ 		for (let i = 0; i < 3; i++) {
 
-		animatedSprite.animatedSprite = animatedSprite.animatedSprite.concat(animSpriteA);		
+			if (i == 0) { distanceX = 0; distanceY = -10 }
+			if (i == 1) { distanceX = -10; distanceY = 10 }
+			if (i == 2) { distanceX = 10; distanceY = 10 }
 
-		var animSpriteB = 
-		[{ 
-			img: engine.resources.data[3], 
-			vPosition: {x: x - 98 / 2 - 10, y: y - 95 / 2 + 10}, 
-			cols: 5, rows: 5, numberOfRepetitions: 1, 
-			spriteWidth: 98, spriteHeight: 95,
-			frame : -1, countNumberOfRepetitions : 0, 
-			xIndex: 0, yIndex: 0,
-			pastTime : (new Date()).getTime()
-		}];
-
-		animatedSprite.animatedSprite = animatedSprite.animatedSprite.concat(animSpriteB);		
-
-		var animSpriteC = 
-		[{ 
-			img: engine.resources.data[3], 
-			vPosition: {x: x - 98 / 2 + 10, y: y - 95 / 2 + 10}, 
-			cols: 5, rows: 5, numberOfRepetitions: 1, 
-			spriteWidth: 98, spriteHeight: 95,
-			frame : -1, countNumberOfRepetitions : 0, 
-			xIndex: 0, yIndex: 0,
-			pastTime : (new Date()).getTime()
-		}];
-
-		animatedSprite.animatedSprite = animatedSprite.animatedSprite.concat(animSpriteC);		
+			animatedSprite.animatedSprite = animatedSprite.animatedSprite.concat(
+			[{ 
+				img: engine.resources.data[3], 
+				vPosition: {x: x - 98 / 2 + distanceX, y: y - 95 / 2 + distanceY}, 
+				cols: 5, rows: 5, numberOfRepetitions: 1, 
+				spriteWidth: 98, spriteHeight: 95,
+				frame : -1, countNumberOfRepetitions : 0, 
+				xIndex: 0, yIndex: 0,
+				pastTime : (new Date()).getTime()
+			}])
+		
+		}
 	}
 }
 
@@ -230,7 +212,7 @@ var meteor = {
 	}
 }
 
-let classes = {
+let modules = {
 	animatedSprite, 
 	player, 
 	shot, 
