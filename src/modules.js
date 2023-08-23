@@ -121,32 +121,32 @@ var player = {
 
 var shot = {
 	velocity : 9,
-	shot : [{vPosition : { x: 0, y: 0 }, angle: 0, angularVelocity: 0}], 
+	vShot : [{vPosition : { x: 0, y: 0 }, angle: 0, angularVelocity: 0}], 
 	scale : 0.015,
 	radius : 100,
 	'draw' : function() 
 	{ 
-		for (var i = 0; i < shot.shot.length; i++) 
+		for (var i = 0; i < shot.vShot.length; i++) 
 		{
 			engine.draw.ctx.fillStyle = "white";
   			engine.draw.ctx.beginPath();
-  			engine.draw.ctx.arc(shot.shot[i].vPosition.x, shot.shot[i].vPosition.y, shot.scale * shot.radius, 0, 2 * Math.PI)
+  			engine.draw.ctx.arc(shot.vShot[i].vPosition.x, shot.vShot[i].vPosition.y, shot.scale * shot.radius, 0, 2 * Math.PI)
   			engine.draw.ctx.fill();
 		}
 	},
 	'move' : function() { 
-	    for (var i = 0; i < shot.shot.length; i++) 
+	    for (var i = 0; i < shot.vShot.length; i++) 
 	    {    		
-    		shot.shot[i].vPosition.x = shot.shot[i].vPosition.x + shot.velocity * Math.sin(shot.shot[i].angle);
-    		shot.shot[i].vPosition.y = shot.shot[i].vPosition.y - shot.velocity * Math.cos(shot.shot[i].angle);
-    		shot.shot[i].angularVelocity = shot.shot[i].angularVelocity + 0.125; 
+    		shot.vShot[i].vPosition.x = shot.vShot[i].vPosition.x + shot.velocity * Math.sin(shot.vShot[i].angle);
+    		shot.vShot[i].vPosition.y = shot.vShot[i].vPosition.y - shot.velocity * Math.cos(shot.vShot[i].angle);
+    		shot.vShot[i].angularVelocity = shot.vShot[i].angularVelocity + 0.125; 
     	}
 	}
 }
 
 var meteor = {
 	numberOfMeteors : 50,
-	meteor : [{vPosition : { x: 0, y: 0 }, vVelocity : { x: -1, y: -1 }, angle: 0, angularVelocity : 0}], 
+	vMeteor : [{vPosition : { x: 0, y: 0 }, vVelocity : { x: -1, y: -1 }, angle: 0, angularVelocity : 0}], 
 	scale : 0.1,
 	radius : 
 	0.5 * 
@@ -156,24 +156,24 @@ var meteor = {
 	0.5),
 	'draw' : function() 
 	{ 
-		for (var i = 0; i < meteor.meteor.length; i++) {
-			engine.draw.drawImageByName(meteor.meteor[i].vPosition.x, meteor.meteor[i].vPosition.y, 'meteor', meteor.scale, meteor.meteor[i].angle); 
+		for (var i = 0; i < meteor.vMeteor.length; i++) {
+			engine.draw.drawImageByName(meteor.vMeteor[i].vPosition.x, meteor.vMeteor[i].vPosition.y, 'meteor', meteor.scale, meteor.vMeteor[i].angle); 
 		  	engine.draw.ctx.strokeStyle = "white";  		
   			engine.draw.ctx.beginPath();
-  			if (showWhiteCircle) engine.draw.ctx.arc(meteor.meteor[i].vPosition.x, meteor.meteor[i].vPosition.y, meteor.scale * meteor.radius, 0, 2 * Math.PI)
+  			if (showWhiteCircle) engine.draw.ctx.arc(meteor.vMeteor[i].vPosition.x, meteor.vMeteor[i].vPosition.y, meteor.scale * meteor.radius, 0, 2 * Math.PI)
   			engine.draw.ctx.stroke();
 		}
 	},
 	'move' : function() { 
-	    for (var i = 0; i < meteor.meteor.length; i++) 
+	    for (var i = 0; i < meteor.vMeteor.length; i++) 
 	    {
-	    	meteor.meteor[i].vPosition.x = meteor.meteor[i].vPosition.x + meteor.meteor[i].vVelocity.x;
-    		meteor.meteor[i].vPosition.y = meteor.meteor[i].vPosition.y - meteor.meteor[i].vVelocity.y;
-    		if (meteor.meteor[i].vPosition.x > canvas.width) meteor.meteor[i].vPosition.x = 0
-    		if (meteor.meteor[i].vPosition.x < 0) meteor.meteor[i].vPosition.x = canvas.width
-	    	if (meteor.meteor[i].vPosition.y < 0) meteor.meteor[i].vPosition.y = canvas.height
-    		if (meteor.meteor[i].vPosition.y > canvas.height) meteor.meteor[i].vPosition.y = 0    	
-    		meteor.meteor[i].angle = meteor.meteor[i].angle + meteor.meteor[i].angularVelocity; 
+	    	meteor.vMeteor[i].vPosition.x = meteor.vMeteor[i].vPosition.x + meteor.vMeteor[i].vVelocity.x;
+    		meteor.vMeteor[i].vPosition.y = meteor.vMeteor[i].vPosition.y - meteor.vMeteor[i].vVelocity.y;
+    		if (meteor.vMeteor[i].vPosition.x > canvas.width) meteor.vMeteor[i].vPosition.x = 0
+    		if (meteor.vMeteor[i].vPosition.x < 0) meteor.vMeteor[i].vPosition.x = canvas.width
+	    	if (meteor.vMeteor[i].vPosition.y < 0) meteor.vMeteor[i].vPosition.y = canvas.height
+    		if (meteor.vMeteor[i].vPosition.y > canvas.height) meteor.vMeteor[i].vPosition.y = 0    	
+    		meteor.vMeteor[i].angle = meteor.vMeteor[i].angle + meteor.vMeteor[i].angularVelocity; 
     	}
 	},
 	'populateWithMeteors' : function() 
@@ -207,7 +207,7 @@ var meteor = {
 
 			var m = [{vPosition : { x: x, y: y }, vVelocity : { x: velocityX, y: velocityY }, angle: angle, angularVelocity : angularVelocity}]; 
 			
-			meteor.meteor = meteor.meteor.concat(m);
+			meteor.vMeteor = meteor.vMeteor.concat(m);
 		}
 	}
 }

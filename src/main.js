@@ -78,7 +78,7 @@ function main() {
 
 	if (engine.key.isKeyPressed("Space") && (currentTime - pastTime) >= deltaTime) {
 		var s = [{ vPosition : { x: modules.player.vPosition.x, y: modules.player.vPosition.y }, angle: modules.player.angle, angularVelocity: 0.25 }];
-		modules.shot.shot = modules.shot.shot.concat(s);
+		modules.shot.vShot = modules.shot.vShot.concat(s);
 		engine.sound.playAudioByName("spaceship-shot");
    		pastTime = (new Date()).getTime();
 	}
@@ -92,7 +92,7 @@ function main() {
 
 function refreshGameConditions() {
 
-	if (modules.meteor.meteor.length == 0) {
+	if (modules.meteor.vMeteor.length == 0) {
 		gameState.situation.win = true;
 	}
 	
@@ -100,7 +100,7 @@ function refreshGameConditions() {
 		gameState.situation.lose = true;
 	}
 
-	if (gameState.situation.win == true) gui.youWin();
+	if (gameState.situation.win == true) gui.youWin()
 
 	if (gameState.situation.lose == true) {  	
 	  	gui.youLose();
@@ -127,30 +127,30 @@ function testCollisions() {
 	var radiusSM = 0.61 * (modules.shot.scale + modules.meteor.scale) * (modules.shot.radius + modules.meteor.radius);
 	var radiusPM = 0.61 * (modules.player.scale + modules.meteor.scale) * (modules.player.radius + modules.meteor.radius);
 
-	modules.shot.shot.forEach(
+	modules.shot.vShot.forEach(
 		function(itemShot, indexShot) { 
-			modules.meteor.meteor.forEach(
+			modules.meteor.vMeteor.forEach(
 				function(itemMeteor, indexMeteor) {
 					if (engine.util.contains(itemShot, itemMeteor, radiusSM)) 
 					{
 						engine.sound.playAudioByName("meteor-explosion")
 						modules.animatedSprite.setAnimation(itemMeteor)
-						modules.meteor.meteor.splice(indexMeteor, 1)
-						modules.shot.shot.splice(indexShot, 1)		
+						modules.meteor.vMeteor.splice(indexMeteor, 1)
+						modules.shot.vShot.splice(indexShot, 1)		
 					}
 				}
 			)
 		}
 	)
 	
-	modules.meteor.meteor.forEach(
+	modules.meteor.vMeteor.forEach(
 		function(item, index) {
 			if (engine.util.contains(modules.player, item, radiusPM)) 
 			{
 				modules.player.power = modules.player.power - 25;
 				engine.sound.playAudioByName("spaceship-meteor-impact")
 				modules.animatedSprite.setAnimation(item)
-				modules.meteor.meteor.splice(index, 1)
+				modules.meteor.vMeteor.splice(index, 1)
 			}
 		}
 	) 
