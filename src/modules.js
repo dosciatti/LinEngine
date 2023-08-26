@@ -9,11 +9,11 @@ var animatedSprite = {
 	},
 	'animate' : function(currentTime, animSprite) 
 	{		
-		var deltaTime = 100;
+		
     	if (animSprite.countNumberOfRepetitions <= animSprite.numberOfRepetitions) 
     	{
 	   		engine.draw.drawAnimatedSprite(animSprite.vPosition, animSprite.img, animSprite.xIndex, animSprite.yIndex, animSprite.spriteWidth, animSprite.spriteHeight) 
-			if ((currentTime - animSprite.pastTime) >= deltaTime) 
+			if ((currentTime - animSprite.pastTime) >= engine.clock.deltaTime) 
 			{
   				animSprite.frame = animSprite.frame + 1;
   				animSprite.xIndex = (animSprite.xIndex + 1) % animSprite.cols;

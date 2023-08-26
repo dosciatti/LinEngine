@@ -1,5 +1,11 @@
 let canvas = document.getElementById("myCanvas");
 
+var clock = {	
+	deltaTime : 100,
+	pastTime : (new Date()).getTime(),
+ 	currentTime : (new Date()).getTime()
+}
+
 var key = {	
 	keys : [
 		{key: 'Enter', pressed: false},
@@ -145,6 +151,7 @@ var util = {
 }
 
 let engine = {
+	clock,
 	key, 
 	resources, 
 	draw, 

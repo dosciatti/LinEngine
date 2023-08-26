@@ -28,26 +28,31 @@ var gameState = {
   	'situation' : {win : false, lose : false} ,
 };
 
-var deltaTime = 100;
-var deltaAngle = 0.025;
-var deltaVelocity = 0.02;
-var pastTime = (new Date()).getTime();
-var isBackgroundSoundStarted = false;
-var spaceshipExploded = false;
+var gameDefinitions = {
+	constants : {
+		deltaAngle : 0.025,
+		deltaVelocity : 0.02,
+		angularVelocity : 0.25
+	},
+ 	transitories : {
+ 		isBackgroundSoundStarted : false,
+		spaceshipExploded : false
+	}
+}
 
 function main() {
 
-	currentTime = (new Date()).getTime();
+	engine.clock.currentTime = (new Date()).getTime()
 	
-	if (isBackgroundSoundStarted == false) 
+	if (gameDefinitions.transitories.isBackgroundSoundStarted == false) 
 	{
-		engine.sound.playAudioByName("ground-hard");
-		isBackgroundSoundStarted = true;	
+		engine.sound.playAudioByName("ground-hard")
+		gameDefinitions.transitories.isBackgroundSoundStarted = true	
 	} 
 	
 	engine.draw.ctx.fillStyle = "black";
-  	engine.draw.ctx.fillRect(0, 0, canvas.width, canvas.height);
-  	engine.draw.ctx.fill(); 
+  	engine.draw.ctx.fillRect(0, 0, canvas.width, canvas.height)
+  	engine.draw.ctx.fill()
   	
   	gui.draw();
   	
@@ -61,26 +66,26 @@ function main() {
 	modules.meteor.move();
 	
 	if (engine.key.isKeyPressed("ArrowLeft")) {
-		modules.player.angle = modules.player.angle - deltaAngle;
+		modules.player.angle = modules.player.angle - gameDefinitions.constants.deltaAngle;
 	}
 
 	if (engine.key.isKeyPressed("ArrowRight")) {
-		modules.player.angle = modules.player.angle + deltaAngle;
+		modules.player.angle = modules.player.angle + gameDefinitions.constants.deltaAngle;
 	}
 		
 	if (engine.key.isKeyPressed("ArrowUp")) {
-		modules.player.changeVelocity(deltaVelocity);
+		modules.player.changeVelocity(gameDefinitions.constants.deltaVelocity);
 	}
 
 	if (engine.key.isKeyPressed("ArrowDown")) {
-		modules.player.changeVelocity(-2 * deltaVelocity);
+		modules.player.changeVelocity(-2 * gameDefinitions.constants.deltaVelocity);
 	}
 
-	if (engine.key.isKeyPressed("Space") && (currentTime - pastTime) >= deltaTime) {
-		var s = [{ vPosition : { x: modules.player.vPosition.x, y: modules.player.vPosition.y }, angle: modules.player.angle, angularVelocity: 0.25 }];
+	if (engine.key.isKeyPressed("Space") && (engine.clock.currentTime - engine.clock.pastTime) >= engine.clock.deltaTime) {
+		var s = [{ vPosition : { x: modules.player.vPosition.x, y: modules.player.vPosition.y }, angle: modules.player.angle, angularVelocity: gameDefinitions.constants.angularVelocity }];
 		modules.shot.vShot = modules.shot.vShot.concat(s);
 		engine.sound.playAudioByName("spaceship-shot");
-   		pastTime = (new Date()).getTime();
+   		engine.clock.pastTime = (new Date()).getTime();
 	}
   	
 	testCollisions();
@@ -105,12 +110,12 @@ function refreshGameConditions() {
 	if (gameState.situation.lose == true) {  	
 	  	gui.youLose();
 	
-	    if (spaceshipExploded == false) {
+	    if (gameDefinitions.transitories.spaceshipExploded == false) {
 	    	modules.player.explodeSpaceship();
-			spaceshipExploded = true;
+			gameDefinitions.transitories.spaceshipExploded = true;
 		}
 		
-		if (spaceshipExploded == true) {
+		if (gameDefinitions.transitories.spaceshipExploded == true) {
 			modules.player.velocity = 0;
 			modules.player.vVelocity.x = 0;
 			modules.player.vVelocity.y = 0;
