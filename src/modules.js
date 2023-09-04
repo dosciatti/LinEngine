@@ -62,8 +62,16 @@ var player = {
 	Math.pow(resourcesInfo.find(r => r.name === 'spaceship').width, 2) + 
 	Math.pow(resourcesInfo.find(r => r.name === 'spaceship').height, 2), 
 	0.5),
-	'draw' : function() 
-	{ 
+	isSpaceshipExploded : false,
+	'init' : function() {
+		player.vPosition = { x: canvas.width / 2, y: canvas.height / 2 } 
+		player.vForce = { x: 0, y: 1 }
+		player.vVelocity = { x: 0, y: -1 }
+		player.velocity = 1 
+		player.angle = 0
+		player.isSpaceshipExploded = false
+	},
+	'draw' : function() { 
 		engine.draw.drawImageByName(player.vPosition.x, player.vPosition.y, 'spaceship', player.scale, player.angle); 
 	  	engine.draw.ctx.strokeStyle = "white";  		
   		engine.draw.ctx.beginPath();
@@ -89,6 +97,8 @@ var player = {
   	},
   	'explodeSpaceship' : function() {
 
+		player.isSpaceshipExploded = true
+		
 		var img = engine.resources.getResourceByNameAndType("spaceship", "image")
 
   		var x = player.vPosition.x - (img.width / (98 * 5)) / 2;
@@ -124,6 +134,9 @@ var shot = {
 	vShot : [{vPosition : { x: 0, y: 0 }, angle: 0, angularVelocity: 0}], 
 	scale : 0.015,
 	radius : 100,
+	'init' : function() {
+		shot.vShot.splice(0, 1)
+	},
 	'draw' : function() 
 	{ 
 		for (var i = 0; i < shot.vShot.length; i++) 
@@ -145,7 +158,7 @@ var shot = {
 }
 
 var meteor = {
-	numberOfMeteors : 50,
+	numberOfMeteors : 10,
 	vMeteor : [{vPosition : { x: 0, y: 0 }, vVelocity : { x: -1, y: -1 }, angle: 0, angularVelocity : 0}], 
 	scale : 0.1,
 	radius : 
@@ -154,6 +167,9 @@ var meteor = {
 	Math.pow(resourcesInfo.find(r => r.name === 'meteor').width, 2) + 
 	Math.pow(resourcesInfo.find(r => r.name === 'meteor').height, 2), 
 	0.5),
+	'init' : function() {
+		modules.meteor.vMeteor.splice(0, 1)
+	},
 	'draw' : function() 
 	{ 
 		for (var i = 0; i < meteor.vMeteor.length; i++) {
