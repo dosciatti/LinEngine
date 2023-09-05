@@ -6,6 +6,7 @@ var gui = {
 	levelText : { x: 0, y: 30},
 	text: { x: canvas.width * 0.5 - 40, y: canvas.height * 0.5 - 5 },
 	button : { x: canvas.width * 0.5 - 20, y: canvas.height * 0.5 + 20, width: 75, height: 25 },
+	gap : { nextLevel : 5, restart : 13 },
 	'drawPowerBar' : function() 
 	{ 
 		engine.draw.ctx.fillStyle = "red"
@@ -42,19 +43,12 @@ var gameDefinitions = {
 		deltaAngle : 0.025,
 		deltaVelocity : 0.02,
 		angularVelocity : 0.25
-	},
- 	isBackgroundSoundStarted : false
+	}
 }
 
 function main() {
-
-	engine.clock.currentTime = (new Date()).getTime()
 	
-	if (gameDefinitions.isBackgroundSoundStarted == false) 
-	{
-		engine.sound.playAudioByName("ground-hard")
-		gameDefinitions.isBackgroundSoundStarted = true	
-	} 
+	engine.clock.currentTime = (new Date()).getTime()
 	
 	engine.draw.ctx.fillStyle = "black";
   	engine.draw.ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -64,8 +58,7 @@ function main() {
   	gui.drawText("Level: ", "white", gui.level, "15px Arial", gui.levelText)
   	gui.drawText("Score: ", "white", gui.score, "15px Arial", gui.scoreText)
   	
-	if (modules.player.isSpaceshipExploded == false) modules.player.draw()
-	
+	if (modules.player.spaceshipExploded == false) modules.player.draw()
 	modules.shot.draw()
 	modules.animatedSprite.draw((new Date()).getTime())
 	modules.meteor.draw()
@@ -113,10 +106,10 @@ function main() {
    		engine.clock.pastTime = (new Date()).getTime()
 	}
 
-	if (engine.key.isKeyPressed("Space") && (engine.clock.currentTime - engine.clock.pastTime) >= engine.clock.deltaTime) {
+	if (engine.key.isKeyPressed("Space") && (engine.clock.currentTime - engine.clock.pastTime) >= engine.clock.deltaTime * 4) {
 		var s = [{ vPosition : { x: modules.player.vPosition.x, y: modules.player.vPosition.y }, angle: modules.player.angle, angularVelocity: gameDefinitions.constants.angularVelocity }]
 		modules.shot.vShot = modules.shot.vShot.concat(s)
-		engine.sound.playAudioByName("spaceship-shot")
+		engine.sound.playAudioByName("spaceship-shot", false)
    		engine.clock.pastTime = (new Date()).getTime()
 	}
   	
@@ -135,7 +128,7 @@ function refreshGameConditions() {
 	
 	if (modules.player.power <= 0) {
 		gameState.situation.lose = true
-		if (modules.player.isSpaceshipExploded == false) modules.player.explodeSpaceship()
+		if (modules.player.spaceshipExploded == false) modules.player.explodeSpaceship()
 	}
 
 	if (gameState.situation.lose == true || gameState.situation.win == true) {
@@ -150,27 +143,19 @@ function refreshGameConditions() {
 
 		if (gameState.situation.lose == true) {
 			gui.score = 0
-			modules.meteor.vMeteor.forEach(
-				function (item, index) {
-					modules.meteor.vMeteor = modules.meteor.vMeteor.splice(index, 1)
-				}
-			)
+			gui.level = 1
 			modules.player.init()
 			modules.player.power = 100
-			modules.meteor.populateWithMeteors()
-			gameDefinitions.isBackgroundSoundStarted = false
+			modules.meteor.numberOfMeteors = 10
+			modules.meteor.populateWithMeteors()			
 		}
 
 		if (gameState.situation.win == true) {
 			gui.level = gui.level + 1
-			modules.meteor.vMeteor.forEach(
-				function (item, index) {
-					modules.meteor.vMeteor = modules.meteor.vMeteor.splice(index, 1)
-				}
-			)
 			modules.meteor.numberOfMeteors = modules.meteor.numberOfMeteors + 10
 			modules.meteor.populateWithMeteors()
 		}
+		
 		gameState.situation.lose = false
 		gameState.situation.win = false
 		gameState.state.playing = false
@@ -179,11 +164,11 @@ function refreshGameConditions() {
 	if (gameState.state.ended == true) {
 		if (gameState.situation.win == true) { 
 		  	gui.drawText("You win", "white", "", "30px Arial", gui.text)
-			gui.drawButton("Next level", 5)
+			gui.drawButton("Next level", gui.gap.nextLevel)
 		}
 		if (gameState.situation.lose == true) {
 			gui.drawText("You lose", "white", "", "30px Arial", gui.text)
-			gui.drawButton("Restart", 13)
+			gui.drawButton("Restart", gui.gap.restart)
 		}
 		gameState.state.ended = false
 	}
@@ -222,14 +207,15 @@ function testCollisions() {
 		function(item, index) {
 			if (engine.util.contains(modules.player, item, radiusPM)) 
 			{
-				modules.player.power = modules.player.power - 25;
-				engine.sound.playAudioByName("spaceship-meteor-impact")
-				modules.animatedSprite.setAnimation(item)
-				modules.meteor.vMeteor.splice(index, 1)
+				if (modules.player.spaceshipExploded == false) { 
+					modules.player.power = modules.player.power - 25;
+					engine.sound.playAudioByName("spaceship-meteor-impact")
+					modules.animatedSprite.setAnimation(item)
+					modules.meteor.vMeteor.splice(index, 1)
+				}
 			}
 		}
 	) 
-
 }
 
 window.onload 
@@ -237,6 +223,7 @@ window.onload
 	engine.key.setKeyListeners()
 	engine.mouse.setMouseListeners()
 	engine.resources.loadResources(engine.resources.areResourcesPrepared)
+	engine.sound.playAudioByName("ground-easy")
 	modules.shot.init()
 	modules.meteor.init()
 	modules.meteor.populateWithMeteors()

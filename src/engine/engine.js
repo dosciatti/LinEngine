@@ -94,7 +94,7 @@ var draw = {
 	drawImage(x, y, img, scale, rot) 
 	{
 		draw.ctx.save()
-  		draw.ctx.translate(x, y) // change origin
+  		draw.ctx.translate(x, y)
   		draw.ctx.scale(scale, scale)
   		draw.ctx.rotate(rot)
   		draw.ctx.drawImage(img, -img.width / 2, -img.height / 2) 		
@@ -161,8 +161,8 @@ var mouse = {
 	y : 0,
 	'setMouseListeners' : function() { 
 		document.addEventListener('click', function(event) { 
-			mouse.x = event.x
-			mouse.y = event.y
+			mouse.x = event.pageX
+			mouse.y = event.pageY
 		})
 	}	
 }

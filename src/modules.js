@@ -62,14 +62,14 @@ var player = {
 	Math.pow(resourcesInfo.find(r => r.name === 'spaceship').width, 2) + 
 	Math.pow(resourcesInfo.find(r => r.name === 'spaceship').height, 2), 
 	0.5),
-	isSpaceshipExploded : false,
+	spaceshipExploded : false,
 	'init' : function() {
 		player.vPosition = { x: canvas.width / 2, y: canvas.height / 2 } 
 		player.vForce = { x: 0, y: 1 }
 		player.vVelocity = { x: 0, y: -1 }
 		player.velocity = 1 
 		player.angle = 0
-		player.isSpaceshipExploded = false
+		player.spaceshipExploded = false
 	},
 	'draw' : function() { 
 		engine.draw.drawImageByName(player.vPosition.x, player.vPosition.y, 'spaceship', player.scale, player.angle); 
@@ -96,9 +96,8 @@ var player = {
     	player.vForce.y = -force * Math.cos(player.angle);    
   	},
   	'explodeSpaceship' : function() {
+		player.spaceshipExploded = true
 
-		player.isSpaceshipExploded = true
-		
 		var img = engine.resources.getResourceByNameAndType("spaceship", "image")
 
   		var x = player.vPosition.x - (img.width / (98 * 5)) / 2;
@@ -194,6 +193,12 @@ var meteor = {
 	},
 	'populateWithMeteors' : function() 
 	{
+		modules.meteor.vMeteor.forEach(
+			function (item, index) {
+				modules.meteor.vMeteor = modules.meteor.vMeteor.splice(index, 1)
+			}
+		)
+
 		for (var i = 0; i < meteor.numberOfMeteors; i++) {
 
 			var signal = 0;
