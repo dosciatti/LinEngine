@@ -1,5 +1,3 @@
-let canvas = document.getElementById("myCanvas");
-
 var clock = {	
 	deltaTime : 100,
 	pastTime : (new Date()).getTime(),
@@ -58,7 +56,8 @@ var resources = {
 	data : [],
 	areResourcesPrepared() 
 	{
-		if (--resources.count == 0) {
+		resources.count = resources.count - 1
+		if (resources.count == 0) {
 			window.Function.call(main())
 		}
 	},
@@ -73,18 +72,10 @@ var resources = {
     		}
     		resources.data[n].addEventListener('onload', callback(resources.areResourcesPrepared) );
     		if (resourcesInfo[n].type === 'image')
-    			resources.data[n].src = "images/" + resourcesInfo[n].name + "." + resourcesInfo[n].mime;
+    			resources.data[n].src = "src/games/" + game.name + "/resources/images/" + resourcesInfo[n].name + "." + resourcesInfo[n].mimetype
     		if (resourcesInfo[n].type === 'sound')
-    			resources.data[n].src = "audio/" + resourcesInfo[n].name + "." + resourcesInfo[n].mime;
+    			resources.data[n].src = "src/games/" + game.name + "/resources/audio/" + resourcesInfo[n].name + "." + resourcesInfo[n].mimetype
   		}
-	},	
-	getResourceByNameAndType(name, type) 
-	{ 
-		for (let i = 0; i < resourcesInfo.length; i++) {
-			if (resourcesInfo[i].name === name && resourcesInfo[i].type === type) { 
-				return resources.data[i]
-			}
-		}
 	},
 	count : resourcesInfo.length
 }
